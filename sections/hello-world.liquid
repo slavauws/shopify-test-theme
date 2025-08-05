@@ -52,6 +52,18 @@
   </div>
 </div>
 
+<div class="cat-facts-section">
+  <div class="cat-facts-container">
+    <h2>🐱 Cat Facts</h2>
+    <div class="cat-fact-display" id="catFactDisplay">
+      <p>Click the button below to get a random cat fact!</p>
+    </div>
+    <button class="cat-fact-button" id="catFactButton">
+      Get Cat Fact
+    </button>
+  </div>
+</div>
+
 {% stylesheet %}
   .welcome {
     display: grid;
@@ -128,7 +140,101 @@
     padding: 3px 10px 5px;
     text-decoration: none;
   }
+
+  .cat-facts-section {
+    display: grid;
+    grid-template-columns: var(--content-grid);
+    background-color: #fff5f5;
+    padding: 48px 0;
+    margin-top: 50px;
+  }
+
+  .cat-facts-container {
+    grid-column: 2;
+    text-align: center;
+    padding: 0 24px;
+  }
+
+  .cat-facts-container h2 {
+    margin-bottom: 24px;
+    color: #2d3748;
+  }
+
+  .cat-fact-display {
+    background-color: white;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cat-fact-display p {
+    margin: 0;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    color: #4a5568;
+  }
+
+  .cat-fact-button {
+    background-color: #4299e1;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .cat-fact-button:hover {
+    background-color: #3182ce;
+  }
+
+  .cat-fact-button:disabled {
+    background-color: #a0aec0;
+    cursor: not-allowed;
+  }
 {% endstylesheet %}
+
+<script>
+  async function displayCatFact() {
+    const button = document.getElementById('catFactButton');
+    const display = document.getElementById('catFactDisplay');
+    
+    // Disable button and show loading state
+    button.disabled = true;
+    button.textContent = 'Loading...';
+    display.innerHTML = '<p>Fetching cat fact...</p>';
+    
+    try {
+      const fact = await fetchCatFact();
+      if (fact) {
+        display.innerHTML = `<p>"${fact}"</p>`;
+      } else {
+        display.innerHTML = '<p>Sorry, couldn\'t fetch a cat fact right now. Try again later!</p>';
+      }
+    } catch (error) {
+      console.error('Error displaying cat fact:', error);
+      display.innerHTML = '<p>Sorry, couldn\'t fetch a cat fact right now. Try again later!</p>';
+    } finally {
+      // Re-enable button
+      button.disabled = false;
+      button.textContent = 'Get Cat Fact';
+    }
+  }
+
+  // Add event listener when DOM is loaded
+  document.addEventListener('DOMContentLoaded', function() {
+    const button = document.getElementById('catFactButton');
+    if (button) {
+      button.addEventListener('click', displayCatFact);
+    }
+  });
+</script>
 
 {% schema %}
 {
